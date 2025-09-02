@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Launchpad 🚀</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-800: #343a40;
+            --border-radius: 16px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e6e9ef 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 992px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            grid-column: 1 / -1;
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h1 {
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            color: var(--gray-800);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .input-panel {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .output-panel {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            min-height: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 1.2rem;
+            border-radius: 12px;
+            border: 2px solid var(--gray-200);
+            font-size: 16px;
+            min-height: 180px;
+            resize: vertical;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .input-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--gray-800);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .char-count {
+            font-weight: 500;
+        }
+
+        .char-count.warning {
+            color: var(--accent);
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 1.2rem;
+            border: none;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: var(--gray-300);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .button-text {
+            transition: opacity 0.3s ease;
+        }
+
+        .button-loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading .button-text {
+            opacity: 0;
+        }
+
+        .loading .button-loader {
+            opacity: 1;
+        }
+
+        .examples {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .examples h3 {
+            margin-bottom: 1rem;
+            color: var(--gray-800);
+        }
+
+        .example-chip {
+            display: inline-block;
+            background: var(--gray-100);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin: 0.3rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .example-chip:hover {
+            background: var(--gray-200);
+            transform: translateY(-2px);
+        }
+
+        #results {
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transition: opacity 0.5s ease, height 0.5s ease;
+        }
+
+        #results.visible {
+            opacity: 1;
+            height: auto;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .results-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .confidence-badge {
+            background: linear-gradient(to right, var(--success), #2a9d8f);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-top: 5px solid var(--primary);
+            transition: var(--transition);
+            height: 100%;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-card h3 {
+            display: flex;
+            align-items: center;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--gray-800);
+            font-size: 1.2rem;
+        }
+
+        .result-card h3 i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+            font-size: 1.4rem;
+        }
+
+        .result-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .result-list li {
+            background-color: var(--gray-100);
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            font-family: 'Courier New', Courier, monospace;
+            word-wrap: break-word;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+            border-left: 3px solid var(--primary);
+        }
+
+        .result-list li:hover {
+            background-color: var(--gray-200);
+            transform: translateX(5px);
+        }
+
+        .result-list li::before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-right: 0.5rem;
+        }
+
+        .visualization-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--gray-200);
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--gray-800);
+            display: flex;
+            align-items: center;
+        }
+
+        .chart-title i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .error-message {
+            background: #fff5f5;
+            color: #e53e3e;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            border-left: 4px solid #e53e3e;
+            margin-top: 1.5rem;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+            height: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .tab {
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--gray-800);
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-rocket"></i>
+        </div>
+        <h1>ML Launchpad</h1>
+        <p class="subtitle">Describe your machine learning project and get AI-powered recommendations with visual insights</p>
+    </div>
+
+    <div class="container">
+        <div class="input-panel">
+            <div class="form-group">
+                <label for="problem-statement"><i class="fas fa-pencil-alt"></i> Describe Your ML Project</label>
+                <textarea id="problem-statement" placeholder="Example: 'I need to analyze customer reviews to classify them as positive, negative, or neutral. The data is in English and comes from an e-commerce website. I have about 10,000 labeled examples.'" required></textarea>
+                <div class="input-footer">
+                    <div class="examples-link">
+                        <i class="fas fa-lightbulb"></i> Be specific for better results
+                    </div>
+                    <div class="char-count" id="char-count">0/1000</div>
+                </div>
+            </div>
+
+            <button type="button" id="analyze-btn">
+                <span class="button-text">Analyze Project</span>
+                <span class="button-loader">
+                    <i class="fas fa-circle-notch fa-spin"></i> Processing
+                </span>
+            </button>
+
+            <div class="examples">
+                <h3>Try these examples:</h3>
+                <div class="example-chip" data-example="Predict housing prices based on features like square footage, number of bedrooms, and location.">Housing Prices</div>
+                <div class="example-chip" data-example="Classify images of handwritten digits from 0 to 9.">Digit Recognition</div>
+                <div class="example-chip" data-example="Analyze customer sentiment from product reviews for an e-commerce site.">Sentiment Analysis</div>
+            </div>
+        </div>
+
+        <div class="output-panel">
+            <div class="tabs">
+                <div class="tab active" data-tab="results">Results</div>
+                <div class="tab" data-tab="visualizations">Visualizations</div>
+                <div class="tab" data-tab="next-steps">Next Steps</div>
+            </div>
+
+            <div id="results" class="tab-content active">
+                <div class="results-placeholder">
+                    <div style="text-align: center; padding: 3rem 1rem; color: var(--gray-800);">
+                        <i class="fas fa-space-shuttle" style="font-size: 4rem; margin-bottom: 1rem; color: var(--gray-300);"></i>
+                        <h3>Your Analysis Will Appear Here</h3>
+                        <p>Describe your machine learning project and click "Analyze Project" to get recommendations</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="visualizations" class="tab-content">
+                <div class="visualization-placeholder">
+                    <div style="text-align: center; padding: 3rem 1rem; color: var(--gray-800);">
+                        <i class="fas fa-chart-line" style="font-size: 4rem; margin-bottom: 1rem; color: var(--gray-300);"></i>
+                        <h3>Visualizations Will Appear Here</h3>
+                        <p>After analyzing your project, we'll show helpful charts and graphs here</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="next-steps" class="tab-content">
+                <div class="next-steps-placeholder">
+                    <div style="text-align: center; padding: 3rem 1rem; color: var(--gray-800);">
+                        <i class="fas fa-road" style="font-size: 4rem; margin-bottom: 1rem; color: var(--gray-300);"></i>
+                        <h3>Next Steps Guidance</h3>
+                        <p>After analysis, we'll provide a roadmap for implementing your ML project</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const problemStatement = document.getElementById('problem-statement');
+        const charCount = document.getElementById('char-count');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const resultsDiv = document.getElementById('results');
+        const visualizationsDiv = document.getElementById('visualizations');
+        const nextStepsDiv = document.getElementById('next-steps');
+        const exampleChips = document.querySelectorAll('.example-chip');
+        const tabs = document.querySelectorAll('.tab');
+
+        // Character counter
+        problemStatement.addEventListener('input', () => {
+            const count = problemStatement.value.length;
+            charCount.textContent = `${count}/1000`;
+            
+            if (count > 1000) {
+                charCount.classList.add('warning');
+            } else {
+                charCount.classList.remove('warning');
+            }
+        });
+
+        // Example chips
+        exampleChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                problemStatement.value = chip.getAttribute('data-example');
+                problemStatement.dispatchEvent(new Event('input'));
+            });
+        });
+
+        // Tabs functionality
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and content
+                tabs.forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Add active class to clicked tab and corresponding content
+                tab.classList.add('active');
+                document.getElementById(tab.getAttribute('data-tab')).classList.add('active');
+            });
+        });
+
+        // Analyze button click handler
+        analyzeBtn.addEventListener('click', async () => {
+            const problemText = problemStatement.value.trim();
+            if (!problemText || problemText.length > 1000) return;
+
+            // UI Loading State
+            analyzeBtn.disabled = true;
+            analyzeBtn.classList.add('loading');
+            
+            // Clear previous results
+            resultsDiv.innerHTML = `
+                <div class="results-header">
+                    <h2 class="results-title">Analyzing Your Project</h2>
+                    <div class="confidence-badge">Processing...</div>
+                </div>
+                <div class="results-grid">
+                    <div class="result-card">
+                        <h3><i class="fas fa-tasks"></i> Identified Task</h3>
+                        <div class="skeleton" style="height: 1.2rem; width: 80%;"></div>
+                        <div class="skeleton" style="height: 1.2rem; width: 60%;"></div>
+                    </div>
+                    <div class="result-card">
+                        <h3><i class="fas fa-brain"></i> Suggested Models</h3>
+                        <div class="skeleton" style="height: 1rem; width: 90%; margin-bottom: 0.8rem;"></div>
+                        <div class="skeleton" style="height: 1rem; width: 85%; margin-bottom: 0.8rem;"></div>
+                        <div class="skeleton" style="height: 1rem; width: 75%;"></div>
+                    </div>
+                    <div class="result-card">
+                        <h3><i class="fas fa-database"></i> Suggested Datasets</h3>
+                        <div class="skeleton" style="height: 1rem; width: 95%; margin-bottom: 0.8rem;"></div>
+                        <div class="skeleton" style="height: 1rem; width: 80%; margin-bottom: 0.8rem;"></div>
+                        <div class="skeleton" style="height: 1rem; width: 85%;"></div>
+                    </div>
+                </div>
+            `;
+            
+            resultsDiv.classList.add('visible');
+
+            try {
+                // Call Backend API
+                const response = await fetch('http://127.0.0.1:8000/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ problem_statement: problemText }),
+                });
+
+                if (!response.ok) throw new Error(`Server error: ${response.statusText}`);
+                
+                const data = await response.json();
+                displayResults(data);
+                createVisualizations(data);
+                showNextSteps(data);
+                
+            } catch (error) {
+                console.error("API Call Failed:", error);
+                resultsDiv.innerHTML = `
+                    <div class="error-message fade-in">
+                        <h3><i class="fas fa-exclamation-circle"></i> Connection Error</h3>
+                        <p>Could not connect to the API. Please ensure that:</p>
+                        <ul>
+                            <li>The Python server is running on port 8000</li>
+                            <li>There are no firewall restrictions blocking the request</li>
+                            <li>You're using the correct endpoint URL</li>
+                        </ul>
+                    </div>
+                `;
+            } finally {
+                // Restore UI State
+                analyzeBtn.disabled = false;
+                analyzeBtn.classList.remove('loading');
+            }
+        });
+
+        function displayResults(data) {
+            const confidencePercent = (data.confidence_score * 100).toFixed(1);
+            const confidenceColor = confidencePercent >= 80 ? '#4cc9f0' : 
+                                  confidencePercent >= 60 ? '#f9c74f' : '#f94144';
+            
+            resultsDiv.innerHTML = `
+                <div class="results-header fade-in">
+                    <h2 class="results-title">Analysis Results</h2>
+                    <div class="confidence-badge" style="background: ${confidenceColor}">
+                        Confidence: ${confidencePercent}%
+                    </div>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-card fade-in">
+                        <h3><i class="fas fa-tasks"></i> Identified Task</h3>
+                        <p>${data.identified_task}</p>
+                    </div>
+                    
+                    <div class="result-card fade-in" style="animation-delay: 0.2s">
+                        <h3><i class="fas fa-brain"></i> Suggested Models</h3>
+                        <ul class="result-list">
+                            ${data.suggested_models.map(m => `<li>${m}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="result-card fade-in" style="animation-delay: 0.4s">
+                        <h3><i class="fas fa-database"></i> Suggested Datasets</h3>
+                        <ul class="result-list">
+                            ${data.suggested_datasets.map(d => `<li>${d}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            resultsDiv.classList.add('visible');
+        }
+
+        function createVisualizations(data) {
+            // Only create visualizations if we have the necessary data
+            if (!data.visualization_data) {
+                visualizationsDiv.innerHTML = `
+                    <div class="visualization-section">
+                        <div style="text-align: center; padding: 2rem; color: var(--gray-800);">
+                            <i class="fas fa-chart-bar" style="font-size: 3rem; margin-bottom: 1rem; color: var(--gray-300);"></i>
+                            <h3>No Visualization Data Available</h3>
+                            <p>The model did not provide visualization data for this analysis.</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Create charts based on the model's visualization_data
+            visualizationsDiv.innerHTML = `
+                <div class="visualization-section">
+                    <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Model Comparison</h3>
+                    <div class="chart-container">
+                        <canvas id="modelComparisonChart" height="250"></canvas>
+                    </div>
+                    
+                    <div class="chart-grid">
+                        <div class="chart-container">
+                            <h3 class="chart-title"><i class="fas fa-bullseye"></i> Accuracy Estimation</h3>
+                            <canvas id="accuracyChart" height="200"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3 class="chart-title"><i class="fas fa-tachometer-alt"></i> Complexity Level</h3>
+                            <canvas id="complexityChart" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Create charts using the model's data
+            setTimeout(() => {
+                if (data.visualization_data.model_comparison) {
+                    new Chart(document.getElementById('modelComparisonChart'), {
+                        type: 'bar',
+                        data: data.visualization_data.model_comparison,
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Model Comparison'
+                                }
+                            }
+                        }
+                    });
+                }
+                
+                if (data.visualization_data.accuracy_estimation) {
+                    new Chart(document.getElementById('accuracyChart'), {
+                        type: 'doughnut',
+                        data: data.visualization_data.accuracy_estimation,
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }
+                    });
+                }
+                
+                if (data.visualization_data.complexity) {
+                    new Chart(document.getElementById('complexityChart'), {
+                        type: 'radar',
+                        data: data.visualization_data.complexity,
+                        options: {
+                            responsive: true,
+                            scales: {
+                                r: {
+                                    angleLines: {
+                                        display: true
+                                    },
+                                    suggestedMin: 0,
+                                    suggestedMax: 10
+                                }
+                            }
+                        }
+                    });
+                }
+            }, 500);
+        }
+
+        function showNextSteps(data) {
+            // Only show next steps if we have the data
+            if (!data.next_steps) {
+                nextStepsDiv.innerHTML = `
+                    <div class="result-card">
+                        <h3><i class="fas fa-road"></i> Next Steps</h3>
+                        <p>No specific next steps provided for this analysis.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            nextStepsDiv.innerHTML = `
+                <div class="result-card">
+                    <h3><i class="fas fa-road"></i> Project Roadmap</h3>
+                    <p>${data.next_steps.description || 'Based on your project description, here\'s a recommended approach:'}</p>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        ${data.next_steps.steps ? data.next_steps.steps.map((step, index) => `
+                            <div style="display: flex; align-items: flex-start; margin-bottom: 1.5rem;">
+                                <div style="background: var(--primary); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem; flex-shrink: 0;">${index + 1}</div>
+                                <div>
+                                    <h4 style="margin: 0 0 0.5rem 0;">${step.title}</h4>
+                                    <p style="margin: 0;">${step.description}</p>
+                                </div>
+                            </div>
+                        `).join('') : ''}
+                    </div>
+                </div>
+                
+                ${data.next_steps.tools ? `
+                <div class="result-card">
+                    <h3><i class="fas fa-tools"></i> Recommended Tools</h3>
+                    <ul class="result-list">
+                        ${data.next_steps.tools.map(tool => `<li>${tool}</li>`).join('')}
+                    </ul>
+                </div>
+                ` : ''}
+                
+                ${data.next_steps.resources ? `
+                <div class="result-card">
+                    <h3><i class="fas fa-book"></i> Learning Resources</h3>
+                    <ul class="result-list">
+                        ${data.next_steps.resources.map(resource => `<li>${resource}</li>`).join('')}
+                    </ul>
+                </div>
+                ` : ''}
+            `;
+        }
+    </script>
+</body>
+</html>

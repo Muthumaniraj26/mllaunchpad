@@ -1,0 +1,26 @@
+text,label
+"I need to figure out if a movie review is positive or negative.",text classification
+"Classify these customer support tickets into 'urgent', 'billing', or 'technical'.",text classification
+"Is this news headline about sports, politics, or technology?",text classification
+"Detect if a comment is toxic or not.",text classification
+"Given a person's age and income, predict if they will buy a product.",text classification
+"Predict the price of a house based on its size and number of rooms.",tabular regression
+"Forecast next month's sales based on past performance and ad spend.",tabular regression
+"Estimate the total power consumption for a city tomorrow.",tabular regression
+"From a patient's health metrics, estimate their insurance cost.",tabular regression
+"Given a stock's history, predict its price for next week.",tabular regression
+"Write a short, creative story about a robot exploring a new planet.",text generation
+"Generate a marketing email to announce a new product launch.",text generation
+"Create a poem about the monsoon season in India.",text generation
+"Compose a professional thank you note to a client.",text generation
+"Write a Python function that takes a list and returns the sum.",text generation
+"Summarize this long news article into three main bullet points.",summarization
+"Condense this research paper's abstract into a single sentence.",summarization
+"Create a short summary of a long business meeting transcript.",summarization
+"Shorten this chapter of a book into a one-paragraph summary.",summarization
+"Give me the key takeaways from this legal document.",summarization
+"Based on this article about the history of Rajapalayam, what is the town known for?",question answering
+"From this product manual, how do I reset the device to factory settings?",question answering
+"What was the main cause of the event described in this historical text?",question answering
+"Who was the main character in the first chapter of this story?",question answering
+"According to the report, what were the quarterly earnings?",question answering
